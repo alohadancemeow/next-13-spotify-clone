@@ -9,7 +9,12 @@ import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import { FaUserAlt } from "react-icons/fa";
 
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+
 import Button from "./Button";
+import useAuthModal from "@/hooks/useAuthModal";
+import { useUser } from "@/hooks/useUser";
+import { toast } from "react-hot-toast";
 
 type Props = {
   children: React.ReactNode;
@@ -18,8 +23,22 @@ type Props = {
 
 const Header = ({ children, className }: Props) => {
   const router = useRouter();
+  const authModal = useAuthModal();
 
-  const user = null;
+  const supabaseCilent = useSupabaseClient();
+  const { user } = useUser();
+
+  const handleLogout = async () => {
+    const { error } = await supabaseCilent.auth.signOut();
+
+    router.refresh();
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Loged out! 🎉");
+    }
+  };
 
   return (
     <div
@@ -65,10 +84,7 @@ const Header = ({ children, className }: Props) => {
         <div className="flex items-center justify-between gap-x-4">
           {user ? (
             <div className="flex items-center gap-x-4">
-              <Button
-                //   onClick={handleLogout}
-                className="px-6 py-2 bg-white"
-              >
+              <Button onClick={handleLogout} className="px-6 py-2 bg-white">
                 Logout
               </Button>
               <Button
@@ -82,7 +98,7 @@ const Header = ({ children, className }: Props) => {
             <>
               <div>
                 <Button
-                  //   onClick={authModal.onOpen}
+                  onClick={authModal.onOpen}
                   className="font-medium bg-transparent text-neutral-300"
                 >
                   Sign up
@@ -90,7 +106,7 @@ const Header = ({ children, className }: Props) => {
               </div>
               <div>
                 <Button
-                  //   onClick={authModal.onOpen}
+                  onClick={authModal.onOpen}
                   className="px-6 py-2 bg-white"
                 >
                   Log in
