@@ -1,22 +1,26 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { usePathname } from "next/navigation";
-
-import Box from "./Box";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
-import SidebarItem from "./SidebarItem";
-import Library from "./Library";
-import { Song } from "@/types/myTypes";
+import { twMerge } from "tailwind-merge";
+import { usePathname } from "next/navigation";
 
-type Props = {
+import { Song } from "@/types/myTypes";
+import usePlayer from "@/hooks/usePlayer";
+
+import SidebarItem from "./SidebarItem";
+import Box from "./Box";
+import Library from "./Library";
+import { useMemo } from "react";
+
+interface SidebarProps {
   children: React.ReactNode;
   songs: Song[];
-};
+}
 
-const Sidebar = ({ children, songs }: Props) => {
+const Sidebar = ({ children, songs }: SidebarProps) => {
   const pathname = usePathname();
+  const player = usePlayer();
 
   const routes = useMemo(
     () => [
@@ -29,15 +33,35 @@ const Sidebar = ({ children, songs }: Props) => {
       {
         icon: BiSearch,
         label: "Search",
-        active: pathname === "/search",
         href: "/search",
+        active: pathname === "/search",
       },
     ],
     [pathname]
   );
+
   return (
-    <div className="flex h-full">
-      <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
+    <div
+      className={twMerge(
+        `
+        flex 
+        h-full
+        `,
+        player.activeId && "h-[calc(100%-80px)]"
+      )}
+    >
+      <div
+        className="
+          hidden 
+          md:flex 
+          flex-col 
+          gap-y-2 
+          bg-black 
+          h-full 
+          w-[300px] 
+          p-2
+        "
+      >
         <Box>
           <div className="flex flex-col px-5 py-4 gap-y-4">
             {routes.map((item) => (
