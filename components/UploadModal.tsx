@@ -139,7 +139,7 @@ const UploadModal = (props: Props) => {
           />
         </div>
         <div>
-          <div className="pb-1"> Select a song file</div>
+          <div className="pb-1"> Select a image file</div>
           <Input
             id="image"
             type="file"
