@@ -9,6 +9,7 @@ import useUploadModal from "@/hooks/useUploadModal";
 import { Song } from "@/types/myTypes";
 import MediaItem from "./MediaItem";
 import useOnPlay from "@/hooks/useOnPlay";
+import useSubscribeModal from "@/hooks/useSubscribeModal";
 
 type Props = {
   songs: Song[];
@@ -17,8 +18,9 @@ type Props = {
 const Library = ({ songs }: Props) => {
   const authModal = useAuthModal();
   const uploadModal = useUploadModal();
+  const subscribeModal = useSubscribeModal();
 
-  const { user } = useUser();
+  const { user, subscription } = useUser();
   const onPlay = useOnPlay(songs);
 
   const onClick = () => {
@@ -27,6 +29,9 @@ const Library = ({ songs }: Props) => {
     }
 
     // #todo check for subscription
+    if (!subscription) {
+      return subscribeModal.onOpen();
+    }
 
     return uploadModal.onOpen();
   };

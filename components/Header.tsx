@@ -15,6 +15,7 @@ import Button from "./Button";
 import useAuthModal from "@/hooks/useAuthModal";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "react-hot-toast";
+import usePlayer from "@/hooks/usePlayer";
 
 type Props = {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ type Props = {
 const Header = ({ children, className }: Props) => {
   const router = useRouter();
   const authModal = useAuthModal();
+  const player = usePlayer();
 
   const supabaseCilent = useSupabaseClient();
   const { user } = useUser();
@@ -31,6 +33,7 @@ const Header = ({ children, className }: Props) => {
   const handleLogout = async () => {
     const { error } = await supabaseCilent.auth.signOut();
 
+    player.reset();
     router.refresh();
 
     if (error) {
